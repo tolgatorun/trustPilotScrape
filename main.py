@@ -1,12 +1,10 @@
-from email.quoprimime import quote
-from turtle import back
-from pandas import NA
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 import csv 
+from db import add_row_db
 def review(site):
     print(site)
     options = Options()
@@ -26,7 +24,7 @@ def review(site):
         else:
             x+=1 
             return review_get(backupPath)
-        
+    sitename = review_get('/html/body/div[1]/div/main/div/div[3]/div[2]/div/div/div/section[1]/div[1]/div[2]/h1/span[1]')
     review1 = review_get('/html/body/div[1]/div/main/div/div[4]/section/div[3]/article/section/div[2]/p')
     review2 = review_get('/html/body/div[1]/div/main/div/div[4]/section/div[5]/article/section/div[2]/p')
     review3 = review_get('/html/body/div[1]/div/main/div/div[4]/section/div[6]/article/section/div[2]/p')
@@ -34,7 +32,7 @@ def review(site):
     review5 = review_get('/html/body/div[1]/div/main/div/div[4]/section/div[8]/article/section/div[2]/p')
     driver.close()
     driver.quit()
-    return [ review1,review2,review3,review4,review5 ]
+    return [site,sitename,review1,review2,review3,review4,review5]
     
 
 with open('trustpilot.csv', newline='') as csvfile:
@@ -43,3 +41,4 @@ with open('trustpilot.csv', newline='') as csvfile:
         for j in i:
             if "https:" in j[0:-6]:
                 row = review(j[0:-6])
+                add_row_db(row)
